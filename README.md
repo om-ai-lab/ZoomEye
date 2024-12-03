@@ -65,7 +65,7 @@ python ZoomEye/demo.py \
     --input_image demo/demo.jpg \
     --question "What is the color of the soda can?"
 ```
-and the zoomed views of Zoom Eye will be saved into the demo floder.
+and the zoomed views of Zoom Eye will be saved into the demo folder.
 
 ### 2. Results of V<sup>*</sup> Bench
 ```bash
