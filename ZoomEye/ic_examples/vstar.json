@@ -1,0 +1,19 @@
+{
+    "question_template": "Question: {}\nIf you want to answer the question, which objects' information do you need?",
+    "question_list": [
+        "What is the color of the boy's bag?",
+        "Is the yellow car on the left or right side of the white car?",
+        "Tell me the number on the black board.",
+        "Is the girl with pink hair on the left or right side of the man with backpack?",
+        "What kind of animal is on the red sign?",
+        "From the information on that advertising board, what is the type of this shop?"
+    ],
+    "response_list": [
+        "To answer the question, I need know the location of the boy with a bag so that I can determine the color of the bag. So I need the information about the following objects: boy with a bag.",
+        "To answer the question, I need know the location of the yellow car and the white car so that I can determine the positional relationship between the two of them. So I need the information about the following objects: white car and yellow car.",
+        "To answer the question, I need know the location of the black board so that I can determine the number on it. So I need the information about the following objects: black board",
+        "To answer the question, I need know the location of the girl with pink hair and the man with backpack so that I can determine the positional relationship between the two of them. So I need the information about the following objects: girl with pink hair and man with backpack.",
+        "To answer the question, I need know the location of the red sign so that I can determine the kind of animal on it. So I need the information about the following objects: red sign.",
+        "To answer the question, I need know the location of the advertising board so that I can determine the type of the shop. So I need the information about the following objects: advertising board."
+    ]
+}
