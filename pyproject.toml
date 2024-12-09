@@ -58,7 +58,7 @@ train = [
     "av",
     "decord",
     "tyro",
-    "scipy",=
+    "scipy",
 ]
 
 [project.urls]
