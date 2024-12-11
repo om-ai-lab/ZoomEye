@@ -1,4 +1,4 @@
-# ZoomEye
+# ZoomEye: Enhancing Multimodal LLMs with Human-Like Zooming Capabilities through Tree-Based Image Exploration
 <p align="center"> <img src='docs/examples.jpg' align="center" height="400px"> </p>
 
 > [**ZoomEye: Enhancing Multimodal LLMs with Human-Like Zooming Capabilities through Tree-Based Image Exploration**](https://arxiv.org/abs/2411.16044)
