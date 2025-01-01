@@ -1,0 +1,25 @@
+{
+    "question_template": "Question: {}\nIf you want to answer the question, which objects' information do you need?",
+    "question_list": [
+        "This image shows the front view of the ego car. What is the status of the cars that are to the front of the ego car?",
+        "How many people are there on the road or around the road?",
+        "This image shows the front view of the ego car. Based on the observations of the white top pedestrian in the middle, what are possible actions to be taken by the gray car on the left side? What is the reason?",
+        "What color is the truck in the image?",
+        "What is the content in front of the bus in the left area of this picture?",
+        "This image shows the front view of the ego car. What are objects to the front of the ego car?",
+        "What color is the building in the upper right corner of the picture?",
+        "This image shows the front view of the ego car. What is the future state of the person wearing a black top in the right?",
+        "This image shows the front view of the ego car. What should the ego vehicle do when encountering the traffic light on the left?"
+    ],
+    "response_list": [
+        "To answer the question, I need know the location of all cars so that I can determine the status of the cars. So I need the information about the following objects: all cars.",
+        "To answer the question, I need know the location of all people so that I can determine the number of the people. So I need the information about the following objects: all people.",
+        "To answer the question, I need know the location of the white top pedestrian in the middle and the gray car in the left so that I can determine the possible actions taken by the gray car. So I need the information about the following objects: white top pedestrian in the middle, gray car on the left side.",
+        "To answer the question, I need know the location of the truck so that I can determine its color. So I need the information about the following objects: truck.",
+        "To answer the question, I need know the location of the bus in the left area of this picture so that I can determine the content in front of it. So I need the information about the following objects: bus in the left area of this picture.",
+        "To answer the question, I need know the location of all objects so that I can determine what objects are in front of the ego car. So I need the information about the following objects: all objects.",
+        "To answer the question, I need know the location of the building in the upper right corner of the picture so that I can determine its color. So I need the information about the following objects: building in the upper right corner of the picture.",
+        "To answer the question, I need know the location of the person wearing a black top in the right so that I can predict his future state. So I need the information about the following objects: person wearing a black top in the right.",
+        "To answer the question, I need know the location of the traffic light on the left so that I can determine what should do next. So I need the information about the following objects: traffic light on the left."
+    ]
+}

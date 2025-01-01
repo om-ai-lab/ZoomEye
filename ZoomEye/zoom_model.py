@@ -85,8 +85,8 @@ class ZoomModel(ABC):
         print("index_yes:", self.index_yes)
         print("index_no:", self.index_no)
     
-    def get_confidence_weight(self, node: Node, tree: ImageTree):
-        coeff = (1 - self.bias_value) / (tree.max_depth ** 2)
+    def get_confidence_weight(self, node: Node, max_depth: int):
+        coeff = (1 - self.bias_value) / (max_depth ** 2)
         return coeff * (node.depth**2) + self.bias_value
     
     @abstractmethod
@@ -135,7 +135,7 @@ class ZoomModel(ABC):
         return confidence
     
     @torch.inference_mode()
-    def free_form_using_nodes(self, image_pil, question, searched_nodes: List[Node]):
+    def free_form_using_nodes(self, image_pil, question, searched_nodes: List[Node], return_zoomed_view=False):
         image_list = self.process_nodes_to_image_list(searched_nodes, image_pil)
         prompt_tag = self.get_prompt_tag(image_list)
         qs = self.prompts[prompt_tag]["pre_information"] + question
@@ -153,6 +153,11 @@ class ZoomModel(ABC):
                 max_new_tokens=256,
             )
         outputs = self.tokenizer.batch_decode(output_ids, skip_special_tokens=True)[0]
+        
+        if return_zoomed_view:
+            response = {'text': outputs, 'output_image': image_list[1] if len(image_list) > 1 else image_list[0]}
+            return response
+        
         return outputs
     
     @torch.inference_mode()

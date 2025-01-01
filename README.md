@@ -1,10 +1,17 @@
-# ZoomEye
+# 🔍 ZoomEye: Enhancing Multimodal LLMs with Human-Like Zooming Capabilities through Tree-Based Image Exploration
+
+<font size=4><div align='center' > [[🍎 Project](https://szhanz.github.io/zoomeye/)] [[📖 Paper](https://arxiv.org/abs/2411.16044)] [[🤗 Data](https://huggingface.co/datasets/omlab/zoom_eye_data)] </div></font>
+
 <p align="center"> <img src='docs/examples.jpg' align="center" height="400px"> </p>
 
-> [**ZoomEye: Enhancing Multimodal LLMs with Human-Like Zooming Capabilities through Tree-Based Image Exploration**](https://arxiv.org/abs/2411.16044)
 
 Zoom Eye enables MLLMs to **(a)** answer the question directly when the visual information is adequate, **(b)** zoom in gradually for a closer examination, and **(c)** zoom out to the previous view and explore other regions if the desired information is not initially found.
 
+## 📜  Updates
+* **`2025.01.01`** 🌟  We released the [Project Page](https://szhanz.github.io/zoomeye/) of ZoomEye, welcom to visit~
+* **`2025.01.01`** 🌟  We released the evaluation code for MME-RealWorld.
+* **`2024.11.30`** 🌟  We released the evaluation code for V<sup>*</sup> Bench and HR-Bench.
+* **`2024.11.25`** 🌟  We released the [ArXiv paper](https://arxiv.org/abs/2411.16044).
 
 ## 🛠️ Installation
 This project is built based on [LLaVA-Next](https://github.com/LLaVA-VL/LLaVA-NeXT). If you encounter unknown errors during installation, you can refer to the issues and solutions in it.
@@ -31,31 +38,41 @@ In our work, we implement Zoom Eye with LLaVA-v1.5 and LLaVA-OneVision(ov) serie
 * [LLaVA-ov-7B](https://huggingface.co/lmms-lab/llava-onevision-qwen2-7b-ov)
 
 ### 2. Evaluation data
-The evaluation data we will use has been packaged together, and the link is provided [here](https://huggingface.co/datasets/omlab/zoom_eye_data). After downloading, please unzip it and its path is referred as to **anno path**.
+The core evaluation data (including V<sup>*</sup> Bench and HR-Bench) will be used has been packaged together, and the link is provided [here](https://huggingface.co/datasets/omlab/zoom_eye_data). After downloading, please unzip it and its path is referred as to **anno path**.
 
-Its folder tree is that:
+**[Optional]** If you want to evaluate ZoomEye on MME-RealWorld Benchmark, you could follow the instructions in [this repository](https://github.com/yfzhang114/MME-RealWorld) to download the images and extract them to the \<anno path\>/mme-realworld directory. Meanwhile, place the *annotation_mme-realworld.json* file from [this link](https://huggingface.co/datasets/omlab/zoom_eye_data) into \<anno path\>/mme-realworld.
+
+The folder tree is that:
 ```
 zoom_eye_data 
   ├── hr-bench_4k                                  
   │   └── annotation_hr-bench_4k.json
-  │   └── images
+  │   └── images/
   │     └── some.jpg
   │    ...
   ├── hr-bench_8k
   │   └── annotation_hr-bench_8k.json
-  │   └── images
+  │   └── images/
   │     └── some.jpg
   │    ...
   │── vstar
   │   └── annotation_vstar.json
-  │   └── direct_attributes
+  │   └── direct_attributes/
   │     └── some.jpg
   │    ...
-  │   └── relative_positions
+  │   └── relative_positions/
   │     └── some.jpg
   │    ...
+  ├── mme-realworld
+  │   └── annotation_mme-realworld.json
+  │   └── AutonomousDriving/
+  │   └── MME-HD-CN/
+  │   └── monitoring_images/
+  │   └── ocr_cc/
+  │   └── remote_sensing/
  ...
 ```
+
 
 ## 🚀 Evaluation
 ### 1. Run the demo
@@ -68,7 +85,13 @@ python ZoomEye/demo.py \
 ```
 and the zoomed views of Zoom Eye will be saved into the demo folder.
 
-### 2. Results of V<sup>*</sup> Bench
+### 2. Run the Gradio Demo
+We also provide a Gradio Demo, run the script and open http://127.0.0.1:7860/ in your browser.
+```bash
+python gdemo_gradio.py 
+```
+
+### 3. Results of V<sup>*</sup> Bench
 ```bash
 # After excute this script, the result will be saved in the answers dir: ZoomEye/eval/answers/vstar/<mllm model base name>/merge.jsonl
 CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 bash ZoomEye/eval/perform_zoom_eye.sh \
@@ -83,7 +106,7 @@ The \<mllm model\> could be referred as to the above MLLM checkpoints, and the \
 
 If you don't have multi-gpu environment, you can set CUDA_VISIBLE_DEVICES=0.
 
-### 3. Results of HR-Bench 4k
+### 4. Results of HR-Bench 4k
 ```bash
 # After excute this script, the result will be saved in the answers dir: ZoomEye/eval/answers/hr-bench_4k/<mllm model base name>/merge.jsonl
 CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 bash ZoomEye/eval/perform_zoom_eye.sh \
@@ -92,23 +115,23 @@ CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 bash ZoomEye/eval/perform_zoom_eye.sh \
 hr-bench_4k
 
 # Get the result
-python ZoomEye/eval/eval_results_vstar.py --answers-file ZoomEye/eval/answers/vstar/hr-bench_4k/merge.jsonl
+python ZoomEye/eval/eval_results_hr-bench.py --answers-file ZoomEye/eval/answers/vstar/hr-bench_4k/merge.jsonl
 ```
 
 
-### 4. Results of HR-Bench 8k
+### 5. Results of HR-Bench 8k
 ```bash
-# After excute this script, the result will be saved in the answers dir: ZoomEye/eval/answers/hr-bench_4k/<mllm model base name>/merge.jsonl
+# After excute this script, the result will be saved in the answers dir: ZoomEye/eval/answers/hr-bench_8k/<mllm model base name>/merge.jsonl
 CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 bash ZoomEye/eval/perform_zoom_eye.sh \
 <mllm model> \
 <anno path> \
 hr-bench_8k
 
 # Get the result
-python ZoomEye/eval/eval_results_vstar.py --answers-file ZoomEye/eval/answers/vstar/hr-bench_8k/merge.jsonl
+python ZoomEye/eval/eval_results_hr-bench.py --answers-file ZoomEye/eval/answers/vstar/hr-bench_8k/merge.jsonl
 ```
 
-### 5. Results for MLLMs with direct answering
+### 6. Results for MLLMs with direct answering
 ```bash
 # After excute this script, the result will be saved in the answers dir: ZoomEye/eval/answers/<bench name>/<mllm model base name>/direct_answer.jsonl
 python ZoomEye/eval/perform_zoom_eye.py \
@@ -119,6 +142,18 @@ python ZoomEye/eval/perform_zoom_eye.py \
 
 # Get the result
 python ZoomEye/eval/eval_results_{vstar/hr-bench}.py --answers-file ZoomEye/eval/answers/<bench name>/<mllm model base name>/direct_answer.jsonl
+```
+
+### 7. Results of MME-RealWorld
+```bash
+# After excute this script, the result will be saved in the answers dir: ZoomEye/eval/answers/mme-realworld/<mllm model base name>/merge.jsonl
+CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 bash ZoomEye/eval/perform_zoom_eye.sh \
+<mllm model> \
+<anno path> \
+mme-realworld
+
+# Get the result
+python ZoomEye/eval/eval_results_mme-realworld.py --answers-file ZoomEye/eval/answers/vstar/hr-bench_8k/merge.jsonl
 ```
 
 ## 🔗 Related works
@@ -134,7 +169,7 @@ If you are intrigued by multimodal large language models, and agent technologies
 
 ## ⭐️ Citation
 
-If you find our repository beneficial, please cite our paper:  
+If you find this repository helpful to your research, welcome to cite our paper:  
 ```angular2
 @article{shen2024zoomeye,
   title={ZoomEye: Enhancing Multimodal LLMs with Human-Like Zooming Capabilities through Tree-Based Image Exploration},

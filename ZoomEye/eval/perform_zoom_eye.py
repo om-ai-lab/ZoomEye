@@ -27,7 +27,7 @@ if __name__ == "__main__":
     parser.add_argument("--answers-file", type=str, default=None)
     parser.add_argument("--model-path", type=str, default="/data9/shz/ckpt/llava-onevision-qwen2-0.5b-ov")
     parser.add_argument("--annotation_path", type=str, default="/data9/shz/dataset/zoom_eye_data")
-    parser.add_argument("--benchmark",  type=str, choices=["vstar", "hr-bench_4k", "hr-bench_8k"], default="vstar")
+    parser.add_argument("--benchmark",  type=str, choices=["vstar", "hr-bench_4k", "hr-bench_8k", "mme-realworld"], default="vstar")
     parser.add_argument("--direct-answer", action="store_true")
     args = parser.parse_args()
 

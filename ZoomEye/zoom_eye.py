@@ -109,7 +109,8 @@ def get_zoom_eye_response(
         option_choose = zoom_model.multiple_choices_inference(image_pil, question, options, searched_nodes)
         return option_choose
     elif answer_type == "free_form":
-        return zoom_model.free_form_using_nodes(image_pil, question, searched_nodes)
+        response = zoom_model.free_form_using_nodes(image_pil, question, searched_nodes, return_zoomed_view=True)
+        return response
     # For hr-bench
     elif answer_type == "option_list":
         answers = []
@@ -117,11 +118,25 @@ def get_zoom_eye_response(
             question_input = format_question(question, option_str)
             answers.append(zoom_model.free_form_using_nodes(image_pil, question_input, searched_nodes))
         return answers
+    # For mme-realworld
+    elif answer_type == "Multiple Choice":
+        question_input = format_question_multichoice(question, options)
+        response = zoom_model.free_form_using_nodes(image_pil, question_input, searched_nodes)
+        return response
     else:
         raise NotImplementedError
 
 def format_question(question, option_str):
     return question + '\n' + option_str + 'Answer the option letter directly.'
+
+def format_question_multichoice(question, options):
+    ret = question
+    for o in options:
+        ret += '\n'
+        ret += o
+    # This prompt is copied from the original paper of MME-RealWorld
+    ret += '\nSelect the best answer to the above multiple-choice question based on the image. Respond with only the letter (A, B, C, D, or E) of the correct option.\nThe best answer is:'
+    return ret
 
 def zoom_eye_search_type1(
         zoom_model: ZoomModel,
@@ -161,7 +176,7 @@ def zoom_eye_search_type1(
         if node.fast_confidence is None:
             existence_confidence = zoom_model.get_confidence_value(node, image_pil, confidence_type='existence', input_ele=visual_cue)
             latent_confidence = zoom_model.get_confidence_value(node, image_pil, confidence_type='latent', input_ele=visual_cue)
-            w = zoom_model.get_confidence_weight(node, image_tree)
+            w = zoom_model.get_confidence_weight(node, max_depth)
             node.fast_confidence = existence_confidence * w + latent_confidence * (1 - w)
             node.fast_confidence_details = {
                 'existence': existence_confidence,
@@ -174,7 +189,6 @@ def zoom_eye_search_type1(
         new_answering_threshold: float,
         pop_trace: List[Tuple[int, Node]],
         candidates: List[Node],
-        is_distinguish = False,
         num_candidates = 1,
     ):
         for _, node in pop_trace:

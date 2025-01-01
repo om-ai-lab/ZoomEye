@@ -51,4 +51,5 @@ if __name__ == "__main__":
         mode="debug",
         **search_kwargs,
     )
-    print(response)
+    print(response['text'])
+    response['output_image'].save("demo/output.jpg")
