@@ -8,6 +8,7 @@
 Zoom Eye enables MLLMs to **(a)** answer the question directly when the visual information is adequate, **(b)** zoom in gradually for a closer examination, and **(c)** zoom out to the previous view and explore other regions if the desired information is not initially found.
 
 ## 📜  Updates
+* **`2025.08.21`** 🌟  Zoom Eye has been accepted by EMNLP 2025 MainConference 🎉. We will release an updated version of the paper soon, which includes more comprehensive evaluations on various Multimodal Large Language Models (MLLMs) as well as a detailed ablation study. Stay tuned ~
 * **`2025.01.01`** 🌟  We released the [Project Page](https://szhanz.github.io/zoomeye/) of ZoomEye, welcom to visit~
 * **`2025.01.01`** 🌟  We released the evaluation code for MME-RealWorld.
 * **`2024.11.30`** 🌟  We released the evaluation code for V<sup>*</sup> Bench and HR-Bench.
