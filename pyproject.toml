@@ -31,18 +31,18 @@ train = [
     "open_clip_torch",
     "fastapi",
     "markdown2[all]",
-    "numpy",
+    "numpy==1.26.1",
     "requests",
     "sentencepiece",
-    "torch==2.1.2",
-    "torchvision==0.16.2",
+    "torch==2.6.0",
+    "torchvision==0.21.0",
     "uvicorn",
     "wandb",
     "deepspeed==0.14.4",
     "peft==0.4.0",
     "accelerate>=0.29.1",
-    "tokenizers~=0.15.2",
-    "transformers@git+https://github.com/huggingface/transformers.git@1c39974a4c4036fd641bc1191cc32799f85715a4",
+    "tokenizers==0.21.0",
+    "transformers==4.50.0",
     "bitsandbytes==0.41.0",
     "scikit-learn==1.2.2",
     "sentencepiece~=0.1.99",
@@ -62,8 +62,7 @@ train = [
 ]
 
 [project.urls]
-"Homepage" = "https://llava-vl.github.io"
-"Bug Tracker" = "https://github.com/haotian-liu/LLaVA/issues"
+"Homepage" = "https://szhanz.github.io/zoomeye/"
 
 [tool.setuptools.packages.find]
 include = ["llava*", "trl*"]

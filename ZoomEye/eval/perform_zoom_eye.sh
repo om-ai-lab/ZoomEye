@@ -8,6 +8,11 @@ MODEL_PATH=$1
 ANNO_PATH=$2
 BENCHMARK=$3
 
+# The number of splits of the sub-images for each node
+SPLIT_NUM=4
+
+
+
 ANSWERS_DIR=ZoomEye/eval/answers/${BENCHMARK}/$(basename "$MODEL_PATH")
 mkdir -p ${ANSWERS_DIR}
 
@@ -22,6 +27,7 @@ for IDX in $(seq 0 $((CHUNKS-1))); do
         --answers-file ${ANSWERS_DIR}/${CHUNKS}_${IDX}.jsonl \
         --annotation_path ${ANNO_PATH} \
         --benchmark ${BENCHMARK} \
+        --split-num ${SPLIT_NUM} \
         --num-chunks $CHUNKS \
         --chunk-idx $IDX &
 done
@@ -35,5 +41,5 @@ output_file=${ANSWERS_DIR}/merge.jsonl
 
 # Loop through the indices and concatenate each file.
 for IDX in $(seq 0 $((CHUNKS-1))); do
-    cat ${ANSWERS_DIR}/${TYPE}/${CHUNKS}_${IDX}.jsonl >> "$output_file"
+    cat ${ANSWERS_DIR}/${CHUNKS}_${IDX}.jsonl >> "$output_file"
 done

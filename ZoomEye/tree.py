@@ -62,12 +62,20 @@ def is_terminal(node: Node, smallest_size: int) -> bool:
     return max(now_w, now_h) < smallest_size
 
 class ImageTree:
-    def __init__(self, image_path, patch_size):
+    def __init__(self, image_path, patch_size, split_num):
         image_pil = Image.open(image_path).convert('RGB')
         self.image_pil = image_pil
         self.patch_size = patch_size
         self.root = Node(ZoomState(image_pil, [0, 0, image_pil.width, image_pil.height]))
         self.max_depth = 0
+        if split_num == 4:
+            self.split_func = split_4_subpatches
+        elif split_num == 9:
+            self.split_func = split_8or9_subpatches
+        elif split_num == 16:
+            self.split_func = split_16_subpatches
+        else:
+            raise ValueError(f"Invalid split number: {split_num}")
         self._build()
         
     
@@ -78,7 +86,7 @@ class ImageTree:
         self.max_depth = max(self.max_depth, node.depth)
         if is_terminal(node, self.patch_size):
             return
-        sub_patches, _, _ = get_sub_patches(node.state.bbox, *split_4subpatches(node.state.bbox))
+        sub_patches, _, _ = get_sub_patches(node.state.bbox, *self.split_func(node.state.bbox))
         for sub_patch in sub_patches:   
             next_state = ZoomState(
                 original_image_pil=node.state.original_image_pil,
@@ -96,7 +104,7 @@ class ImageTree:
 
 def get_sub_patches(current_patch_bbox, num_of_width_patches, num_of_height_patches):
 	width_stride = int(current_patch_bbox[2]//num_of_width_patches)
-	height_stride = int(current_patch_bbox[3]/num_of_height_patches)
+	height_stride = int(current_patch_bbox[3]//num_of_height_patches)
 	sub_patches = []
 	for j in range(num_of_height_patches):
 		for i in range(num_of_width_patches):
@@ -106,7 +114,7 @@ def get_sub_patches(current_patch_bbox, num_of_width_patches, num_of_height_patc
 			sub_patches.append(sub_patch)
 	return sub_patches, width_stride, height_stride
 
-def split_4subpatches(current_patch_bbox):
+def split_4_subpatches(current_patch_bbox):
 	hw_ratio = current_patch_bbox[3] / current_patch_bbox[2]
 	if hw_ratio >= 2:
 		return 1, 4
@@ -114,3 +122,21 @@ def split_4subpatches(current_patch_bbox):
 		return 4, 1
 	else:
 		return 2, 2
+
+def split_8or9_subpatches(current_patch_bbox):
+    hw_ratio = current_patch_bbox[3] / current_patch_bbox[2]
+    if hw_ratio >= 2:
+        return 2, 4
+    elif hw_ratio <= 0.5:
+        return 4, 2
+    else:
+        return 3, 3
+
+def split_16_subpatches(current_patch_bbox):
+    hw_ratio = current_patch_bbox[3] / current_patch_bbox[2]
+    if hw_ratio >= 2:
+        return 2, 8
+    elif hw_ratio <= 0.5:
+        return 8, 2
+    else:
+        return 4, 4

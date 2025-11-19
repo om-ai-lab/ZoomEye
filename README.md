@@ -2,12 +2,19 @@
 
 <font size=4><div align='center' > [[🍎 Project](https://szhanz.github.io/zoomeye/)] [[📖 Paper](https://arxiv.org/abs/2411.16044)] [[🤗 Data](https://huggingface.co/datasets/omlab/zoom_eye_data)] </div></font>
 
+<p align="center"> <img src='docs/PPT Intro.png' align="center" height="400px"> </p>
+
+Most visual existing reasoning approaches remain text-level in nature (**left of the above figure**): MLLMs are prompted to explore various combinations of textual tokens via their underlying language model, while the visual input remains fixed throughout the reasoning process. This paradigm limits the model’s ability to fully exploit rich visual information, particularly when dealing with images containing numerous fine-grained elements. In such cases,
+vision-level reasoning becomes crucial—where models dynamically zoom into specific regions of the image to gather detailed visual cues necessary for accurate decision-making (**right of the above figure**). 
+
+
 <p align="center"> <img src='docs/examples.jpg' align="center" height="400px"> </p>
 
 
 Zoom Eye enables MLLMs to **(a)** answer the question directly when the visual information is adequate, **(b)** zoom in gradually for a closer examination, and **(c)** zoom out to the previous view and explore other regions if the desired information is not initially found.
 
 ## 📜  Updates
+* **`2025.11.19`** 🌟 We have released the code of [InternVL2.5-ZoomEye](ZoomEye/zoom_model_internvl.py) and [Qwen2.5-VL-ZoomEye](ZoomEye/zoom_model_qwenvl.py), welcome to try them! 
 * **`2025.08.28`** 🌟 We have released an [updated version of our paper](https://arxiv.org/pdf/2411.16044v3) on arXiv, which includes the results of Qwen2.5-VL and InternVL2.5, along with a thorough comparison against a wide range of baselines.
 * **`2025.08.21`** 🌟  Zoom Eye has been accepted by EMNLP 2025 MainConference 🎉. We will release an updated version of the paper soon, which includes more comprehensive evaluations on various Multimodal Large Language Models (MLLMs) as well as a detailed ablation study. Stay tuned ~
 * **`2025.01.01`** 🌟  We released the [Project Page](https://szhanz.github.io/zoomeye/) of ZoomEye, welcom to visit~
@@ -33,11 +40,14 @@ pip install -e ".[train]"
 
 ## 📚 Preparation
 ### 1. MLLM checkpoints
-In our work, we implement Zoom Eye with LLaVA-v1.5 and LLaVA-OneVision(ov) series, you could download these checkpoints before running or automatically download them when executing the **from_pretrained** method in transformers.
+In our work, we implement Zoom Eye with LLaVA-v1.5, LLaVA-OneVision(ov), InternVL2.5, and Qwen2.5-VL series, you could download these checkpoints before running or automatically download them when executing the **from_pretrained** method in transformers.
 * [LLaVA-v1.5-7B](https://huggingface.co/liuhaotian/llava-v1.5-7b)
 * [LLaVA-v1.5-13B](https://huggingface.co/liuhaotian/llava-v1.5-13b)
 * [LLaVA-ov-0.5B](https://huggingface.co/lmms-lab/llava-onevision-qwen2-0.5b-ov)
 * [LLaVA-ov-7B](https://huggingface.co/lmms-lab/llava-onevision-qwen2-7b-ov)
+* [InternVL2.5-4B](https://huggingface.co/OpenGVLab/InternVL2_5-4B)
+* [InternVL2.5-8B](https://huggingface.co/OpenGVLab/InternVL2_5-8B)
+* [Qwen2.5-VL-3B](https://huggingface.co/Qwen/Qwen2.5-VL-3B-Instruct)
 
 ### 2. Evaluation data
 The core evaluation data (including V<sup>*</sup> Bench and HR-Bench) will be used has been packaged together, and the link is provided [here](https://huggingface.co/datasets/omlab/zoom_eye_data). After downloading, please unzip it and its path is referred as to **anno path**.
@@ -90,12 +100,13 @@ and the zoomed views of Zoom Eye will be saved into the demo folder.
 ### 2. Run the Gradio Demo
 We also provide a Gradio Demo, run the script and open http://127.0.0.1:7860/ in your browser.
 ```bash
-python gdemo_gradio.py 
+python demo_gradio.py 
 ```
 
 ### 3. Results of V<sup>*</sup> Bench
 ```bash
 # After excute this script, the result will be saved in the answers dir: ZoomEye/eval/answers/vstar/<mllm model base name>/merge.jsonl
+# <mllm model> could be "Qwen/Qwen2.5-VL-3B-Instruct"(huggingface tag) or "/mnt/shz/ckpt/InternVL2_5-8B"(local path)
 CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 bash ZoomEye/eval/perform_zoom_eye.sh \
 <mllm model> \
 <anno path> \

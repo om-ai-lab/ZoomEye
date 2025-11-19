@@ -1,4 +1,7 @@
-from ZoomEye.zoom_model import ZoomModel, ZoomModelGlobalLocal, BOX_COLOR
+from ZoomEye.zoom_model import ZoomModel, ZoomModelGlobalLocal, ZoomModelLocal
+from ZoomEye.zoom_model_internvl import BOX_COLOR  as BOX_COLOR_INTERNVL
+from ZoomEye.zoom_model_qwenvl import BOX_COLOR as BOX_COLOR_QWENVL
+from ZoomEye.zoom_model import BOX_COLOR as BOX_COLOR_LLAVA
 from ZoomEye.tree import ImageTree, Node, ZoomState
 from ZoomEye.utils import include_pronouns
 from typing import Union, Callable, List, Tuple
@@ -16,6 +19,7 @@ def get_zoom_eye_response(
         visual_cue_threshold,
         pop_limit,
         threshold_descrease,
+        split_num=4,
         image_folder: str = None,
         mode="eval"
     ):
@@ -33,23 +37,27 @@ def get_zoom_eye_response(
     image_tree = ImageTree(
         image_path=input_image,
         patch_size=zoom_model.input_size[0],
+        split_num=split_num,
     )
-    zoom_global_local =  isinstance(zoom_model, ZoomModelGlobalLocal)
+    zoom_global_local = not isinstance(zoom_model, ZoomModelLocal)
     if zoom_global_local:
         new_targets = zoom_model.filter_visual_cues(image_pil, targets, image_tree.root, decomposed_question_template, answering_confidence_threshold_upper)
         if len(new_targets) != len(targets):
             # Use the global image to answer
             targets = []
-        BOX_COLOR = 'red'
+        BOX_COLOR_INTERNVL, BOX_COLOR_QWENVL, BOX_COLOR_LLAVA = 'red', 'red', 'red'
+
         # Some questions in HR-Bench involve a “red rectangle,” which conflicts with the visual prompt used in the zoomed view. In such cases, we use blue instead.
         if 'red rectangle' in question:
-            BOX_COLOR = 'blue'
+            BOX_COLOR_INTERNVL, BOX_COLOR_QWENVL, BOX_COLOR_LLAVA = 'blue', 'blue', 'blue'
 
     if mode == "debug":
         print("targets:", targets)
     one_target_search = (len(targets) == 1 and not targets[0].startswith('all '))
     annotation['targets'] = targets
     annotation['num_pop'] = []
+    annotation['num_zoom_in'] = []
+    annotation['num_zoom_out'] = []
     
 
     for target in targets:
@@ -57,10 +65,11 @@ def get_zoom_eye_response(
         image_tree = ImageTree(
             image_path=input_image,
             patch_size=smallest_size,
+            split_num=split_num,
         )
         is_type2 = target.startswith("all ")
         if not is_type2:
-            candidates, num_pop = zoom_eye_search_type1(
+            candidates, num_pop, num_zoom_in, num_zoom_out = zoom_eye_search_type1(
                 zoom_model=zoom_model,
                 pop_limit=pop_limit,
                 num_intervel=2,
@@ -82,6 +91,11 @@ def get_zoom_eye_response(
                     zoom_model.save_crop(image_pil, candidates[0], f"demo/{target}.png")
                     print("confidence:", candidates[0].answering_confidence)
                     print("num_pop:", num_pop)
+                    print("num_zoom_in:", num_zoom_in)
+                    print("num_zoom_out:", num_zoom_out)
+                annotation['num_pop'].append(num_pop)
+                annotation['num_zoom_in'].append(num_zoom_in)
+                annotation['num_zoom_out'].append(num_zoom_out)
         else:
             target = target[4:]
             # This operation aims to remove plural forms. Simply dropping the “s” is a crude approach; instead, you can use spaCy to lemmatize plural words back to their singular form.
@@ -198,10 +212,22 @@ def zoom_eye_search_type1(
             candidates.sort(key=lambda x: x.answering_confidence, reverse=True)
             while len(candidates) > num_candidates:
                 candidates.pop()
+    depth_of_last_node = -1
+    num_zoom_in = 0
+    num_zoom_out = 0
 
     while len(Q) > 0:
         cur_node = Q.pop(0)
         cur_node: Node
+        if depth_of_last_node == -1:
+            pass
+        elif cur_node.depth > depth_of_last_node:
+            num_zoom_in += 1
+        elif cur_node.depth < depth_of_last_node:
+            num_zoom_out += 1
+
+        depth_of_last_node = cur_node.depth
+
         num_pop += 1
         pop_trace.append((0, cur_node))
 
@@ -231,7 +257,7 @@ def zoom_eye_search_type1(
                 Q.append(child)
         # Ranking function is implemented here using key=...
         Q.sort(key=lambda x: get_priority(x), reverse=True)
-    return candidates, num_pop
+    return candidates, num_pop, num_zoom_in, num_zoom_out
 
 
 def zoom_eye_search_type2(
