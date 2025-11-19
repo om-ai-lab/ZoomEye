@@ -36,6 +36,7 @@ conda create -n zoom_eye python=3.10 -y
 conda activate zoom_eye
 pip install --upgrade pip  # Enable PEP 660 support.
 pip install -e ".[train]"
+pip install -r requirements.txt
 ```
 
 ## 📚 Preparation
