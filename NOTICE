@@ -1,0 +1,30 @@
+ZoomEye
+https://github.com/om-ai-lab/ZoomEye
+
+This repository accompanies:
+ZoomEye: Enhancing Multimodal LLMs with Human-Like Zooming Capabilities through Tree-Based Image Exploration
+Haozhan Shen, Kangjia Zhao, Tiancheng Zhao, Ruochen Xu, Zilun Zhang,
+Mingwei Zhu, and Jianwei Yin. EMNLP 2025, pages 6602-6618.
+https://doi.org/10.18653/v1/2025.emnlp-main.335
+
+Third-party attribution
+This project is built on LLaVA-NeXT:
+https://github.com/LLaVA-VL/LLaVA-NeXT
+Existing LLaVA source headers include:
+Copyright 2023 Haotian Liu
+
+This repository also includes TRL code. Existing source headers include:
+Copyright 2022 The HuggingFace Team. All rights reserved.
+https://github.com/huggingface/trl
+
+EVA-CLIP-related files identify adaptations from EVA-CLIP and BEiT:
+https://github.com/baaivision/EVA/tree/master/EVA-CLIP
+https://github.com/microsoft/unilm/tree/master/beit
+
+Existing third-party copyright, license, and attribution notices remain
+applicable to their respective material and must be preserved as required
+by their licenses. This notice does not replace file-specific notices.
+
+This NOTICE provides attribution information and does not modify the
+Apache License, Version 2.0. Academic citation is requested in README.md
+and CITATION.cff; it is not an additional license condition.
