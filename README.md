@@ -181,6 +181,18 @@ If you are intrigued by multimodal large language models, and agent technologies
 🔆 [OmDet: Large-scale vision-language multi-dataset pre-training with multimodal detection network](https://ietresearch.onlinelibrary.wiley.com/doi/full/10.1049/cvi2.12268) (IET Computer Vision)  
 🏠 [Github Repository](https://github.com/om-ai-lab/OmDet)
 
+## License
+
+ZoomEye's original code is licensed under the [Apache License, Version 2.0](LICENSE).
+Commercial, research, and other uses are permitted, subject to the license terms.
+Redistribution requires including the license, marking modified files, preserving
+relevant notices, and carrying forward applicable [NOTICE](NOTICE) attributions
+as specified in Section 4.
+
+Third-party code retains its applicable licenses and notices. Model checkpoints,
+datasets, and other external assets are governed by their respective terms;
+this repository's license does not override those terms.
+
 ## ⭐️ Citation
 
 If you find this repository helpful to your research, welcome to cite our paper:  
