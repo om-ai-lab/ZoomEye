@@ -34,6 +34,8 @@ if __name__ == "__main__":
     parser.add_argument("--annotation_path", type=str, default="/training/shz/project/ZoomEye/zoom_eye_data")
     parser.add_argument("--benchmark",  type=str, choices=["vstar", "hr-bench_4k", "hr-bench_8k", "mme-realworld"], default="vstar")
     parser.add_argument("--direct-answer", action="store_true")
+    parser.add_argument("--attn-implementation", choices=["flash_attention_2", "sdpa", "eager"],
+                        default="flash_attention_2", help="Attention backend for Qwen2.5-VL")
     args = parser.parse_args()
 
     model_path = args.model_path
@@ -82,7 +84,7 @@ if __name__ == "__main__":
             kwargs = {"load_in_8bit": True}
         else:
             kwargs = {}
-        zoom_model = ZoomModelQwenVL(model_path=model_path, device="cuda:0", torch_dtype=torch.bfloat16, patch_scale=1.2, **kwargs)
+        zoom_model = ZoomModelQwenVL(attn_implementation=args.attn_implementation, model_path=model_path, device="cuda:0", torch_dtype=torch.bfloat16, patch_scale=1.2, **kwargs)
         def pop_limit_func(max_depth):
             return max_depth * 3
         search_kwargs = {

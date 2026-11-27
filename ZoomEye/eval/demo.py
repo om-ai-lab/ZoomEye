@@ -20,6 +20,8 @@ if __name__ == "__main__":
     parser.add_argument("--model_path", type=str, default="lmms-lab/llava-onevision-qwen2-7b-ov")
     parser.add_argument("--input_image", type=str, default="demo/demo.jpg")
     parser.add_argument("--question", type=str, default="What is the color of the soda can?")
+    parser.add_argument("--attn-implementation", choices=["flash_attention_2", "sdpa", "eager"],
+                        default="flash_attention_2", help="Attention backend for Qwen2.5-VL")
     args = parser.parse_args()
 
 
@@ -34,7 +36,7 @@ if __name__ == "__main__":
     elif "internvl" in model_path.lower():
         zoom_model = ZoomModelInternvl(model_path=model_path, device="cuda:0", torch_dtype=torch.bfloat16, patch_scale=1.2)
     elif "qwen" in model_path.lower():
-        zoom_model = ZoomModelQwenVL(model_path=model_path, device="cuda:0", torch_dtype=torch.bfloat16, patch_scale=1.2)
+        zoom_model = ZoomModelQwenVL(attn_implementation=args.attn_implementation, model_path=model_path, device="cuda:0", torch_dtype=torch.bfloat16, patch_scale=1.2)
     else:
         raise ValueError(f"Model {model_path} not supported")
     

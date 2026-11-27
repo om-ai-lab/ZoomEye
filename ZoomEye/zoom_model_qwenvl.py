@@ -16,6 +16,7 @@ BOX_COLOR = "red"
 
 class ZoomModelQwenVL:
     def __init__(self, model_path: str, device: str = "cuda:0", torch_dtype=torch.bfloat16, **kwargs) -> None:
+        attn_implementation = kwargs.get("attn_implementation", "flash_attention_2")
         self.device = device
         self.dtype = torch_dtype
         load_kwargs = {}
@@ -30,7 +31,7 @@ class ZoomModelQwenVL:
         self.model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
             model_path,
             torch_dtype=self.dtype,
-            attn_implementation="flash_attention_2",
+            attn_implementation=attn_implementation,
             device_map=device_map, 
             **load_kwargs
         )
