@@ -204,3 +204,30 @@ If you find this repository helpful to your research, welcome to cite our paper:
   year={2024}
 }
 ```
+
+### Qwen2.5-VL attention backend
+
+Qwen2.5-VL uses `flash_attention_2` by default. If FlashAttention is unavailable
+for your PyTorch/CUDA environment, explicitly select PyTorch SDPA:
+
+```python
+from ZoomEye.zoom_model_qwenvl import ZoomModelQwenVL
+
+model = ZoomModelQwenVL(
+    model_path="/path/to/Qwen2.5-VL-3B-Instruct",
+    attn_implementation="sdpa",
+)
+```
+
+Both `ZoomEye/eval/demo.py` and `ZoomEye/eval/perform_zoom_eye.py` accept
+`--attn-implementation sdpa` (or `eager`). This option applies to the Qwen
+wrapper; other model wrappers retain their existing behavior. SDPA uses
+PyTorch's available kernels and does not require the separate `flash-attn`
+package. Backends can differ in numerical results, memory use and speed, so
+record the selected backend when comparing experiments.
+
+Offline constructor regression checks:
+
+```bash
+PYTHONPATH=. python -m unittest discover -s tests -p test_qwen_backend.py -v
+```
